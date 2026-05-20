@@ -177,15 +177,12 @@ function show_infobox() {
             background-color: transparent;
             z-index: 5;
             padding: 0;
-            margin: 0;
+            margin: auto;
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            /* scale to fit viewport while preserving game aspect ratio */
-            width: min(100vw, calc(100vh * {{cookiecutter.width}} / {{cookiecutter.height}}));
-            height: auto;
-            aspect-ratio: {{cookiecutter.width}} / {{cookiecutter.height}};
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
         }
 
         body {
