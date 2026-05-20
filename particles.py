@@ -19,7 +19,7 @@ class ParticleSystem:
             'age': 0.0,
             'gravity': gravity,
         })
-        if len(self.particles) > 150:
+        if len(self.particles) > PARTICLE_MAX_COUNT:
             self.particles.pop(0)
 
     def update(self, dt):
@@ -31,7 +31,7 @@ class ParticleSystem:
         self.particles = [p for p in self.particles if p['age'] < p['lifetime']]
 
         for f in self.flashes:
-            f['radius'] += (f['max_radius'] - f['radius']) * 0.8
+            f['radius'] += (f['max_radius'] - f['radius']) * MINE_FLASH_EXPAND_FACTOR
             f['frames'] -= 1
         self.flashes = [f for f in self.flashes if f['frames'] > 0]
 
@@ -44,7 +44,7 @@ class ParticleSystem:
             surface.blit(s, (int(p['pos'][0]) - r, int(p['pos'][1]) - r))
 
         for f in self.flashes:
-            alpha = int(255 * f['frames'] / 3)
+            alpha = int(255 * f['frames'] / MINE_FLASH_FRAMES)
             r = max(1, int(f['radius']))
             s = pygame.Surface((r * 2, r * 2), pygame.SRCALPHA)
             pygame.draw.circle(s, (255, 255, 255, alpha), (r, r), r)
@@ -53,33 +53,35 @@ class ParticleSystem:
     def emit_hit(self, pos, color):
         for _ in range(PARTICLE_COUNT_HIT):
             angle = random.uniform(0, 2 * math.pi)
-            speed = random.uniform(60, 120)
+            speed = random.uniform(PARTICLE_HIT_SPEED_MIN, PARTICLE_HIT_SPEED_MAX)
             self._spawn(pos, (math.cos(angle) * speed, math.sin(angle) * speed),
-                        color, random.uniform(3, 5), PARTICLE_LIFETIME)
+                        color, random.uniform(PARTICLE_HIT_RADIUS_MIN, PARTICLE_HIT_RADIUS_MAX), PARTICLE_LIFETIME)
 
     def emit_death(self, pos, color):
         for _ in range(PARTICLE_COUNT_DEATH):
             angle = random.uniform(0, 2 * math.pi)
-            speed = random.uniform(150, 300)
+            speed = random.uniform(PARTICLE_DEATH_SPEED_MIN, PARTICLE_DEATH_SPEED_MAX)
             self._spawn(pos, (math.cos(angle) * speed, math.sin(angle) * speed),
-                        color, random.uniform(4, 7), DEATH_PARTICLE_LIFETIME, gravity=150.0)
+                        color, random.uniform(PARTICLE_DEATH_RADIUS_MIN, PARTICLE_DEATH_RADIUS_MAX),
+                        DEATH_PARTICLE_LIFETIME, gravity=PARTICLE_DEATH_GRAVITY)
 
     def emit_mine(self, pos):
         for _ in range(PARTICLE_COUNT_MINE):
             angle = random.uniform(0, 2 * math.pi)
-            speed = random.uniform(100, 200)
+            speed = random.uniform(PARTICLE_MINE_SPEED_MIN, PARTICLE_MINE_SPEED_MAX)
             self._spawn(pos, (math.cos(angle) * speed, math.sin(angle) * speed),
-                        (220, 80, 30), random.uniform(3, 6), PARTICLE_LIFETIME)
+                        MINE_PARTICLE_COLOR, random.uniform(PARTICLE_MINE_RADIUS_MIN, PARTICLE_MINE_RADIUS_MAX),
+                        PARTICLE_LIFETIME)
         self.flashes.append({
             'pos': (pos[0], pos[1]),
-            'radius': 5.0,
-            'max_radius': 40,
-            'frames': 3,
+            'radius': MINE_FLASH_START_RADIUS,
+            'max_radius': MINE_FLASH_MAX_RADIUS,
+            'frames': MINE_FLASH_FRAMES,
         })
 
     def emit_bullet_spark(self, pos):
-        for _ in range(3):
+        for _ in range(PARTICLE_COUNT_SPARK):
             angle = random.uniform(0, 2 * math.pi)
-            speed = random.uniform(150, 250)
+            speed = random.uniform(PARTICLE_SPARK_SPEED_MIN, PARTICLE_SPARK_SPEED_MAX)
             self._spawn(pos, (math.cos(angle) * speed, math.sin(angle) * speed),
-                        (255, 200, 80), 3, 0.2)
+                        BULLET_COLOR, PARTICLE_SPARK_RADIUS, PARTICLE_SPARK_LIFETIME)

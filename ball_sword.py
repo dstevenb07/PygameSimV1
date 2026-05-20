@@ -49,5 +49,5 @@ class SwordBall(Ball):
         tip = self.pos + direction * (SWORD_ORBIT_RADIUS + SWORD_LENGTH)
 
         points = _sword_polygon(base, tip, SWORD_WIDTH)
-        pygame.draw.polygon(surface, (180, 210, 255), points)
-        self.draw_glow(surface, tip, 4, (220, 240, 255))
+        pygame.draw.polygon(surface, SWORD_COLOR, points)
+        self.draw_glow(surface, tip, SWORD_GLOW_RADIUS, SWORD_TIP_COLOR)

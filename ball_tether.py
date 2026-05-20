@@ -25,7 +25,7 @@ class TetherBall(Ball):
         while diff < -math.pi:
             diff += 2 * math.pi
         self.current_angle += diff * TETHER_LAG_FACTOR + self.angular_velocity * dt
-        self.angular_velocity *= 0.9
+        self.angular_velocity *= TETHER_ANG_VEL_DECAY
 
         weight_pos = self.pos + pygame.math.Vector2(
             math.cos(self.current_angle),
@@ -33,7 +33,7 @@ class TetherBall(Ball):
         ) * TETHER_ORBIT_RADIUS
 
         self.weight_trail.append(tuple(weight_pos))
-        if len(self.weight_trail) > 5:
+        if len(self.weight_trail) > TETHER_TRAIL_LENGTH:
             self.weight_trail.pop(0)
 
         if enemy.alive and (enemy.pos - weight_pos).length() < BALL_RADIUS + TETHER_WEIGHT_RADIUS:
@@ -55,24 +55,24 @@ class TetherBall(Ball):
             draw = True
             while t < dist:
                 if draw:
-                    seg_end = min(t + 6, dist)
+                    seg_end = min(t + TETHER_CHAIN_DASH, dist)
                     start = self.pos + step_dir * t
                     end = self.pos + step_dir * seg_end
-                    pygame.draw.line(surface, (130, 130, 140),
+                    pygame.draw.line(surface, TETHER_CHAIN_COLOR,
                                      (int(start.x), int(start.y)),
-                                     (int(end.x), int(end.y)), 2)
-                t += 6 if draw else 4
+                                     (int(end.x), int(end.y)), TETHER_CHAIN_WIDTH)
+                t += TETHER_CHAIN_DASH if draw else TETHER_CHAIN_GAP
                 draw = not draw
 
         if self.weight_trail:
             for i, pos in enumerate(self.weight_trail):
-                alpha = int(120 * (i / len(self.weight_trail)))
-                r = 4
+                alpha = int(TETHER_TRAIL_MAX_ALPHA * (i / len(self.weight_trail)))
+                r = TETHER_TRAIL_RADIUS
                 s = pygame.Surface((r * 2, r * 2), pygame.SRCALPHA)
-                pygame.draw.circle(s, (90, 60, 120, alpha), (r, r), r)
+                pygame.draw.circle(s, (*TETHER_WEIGHT_COLOR, alpha), (r, r), r)
                 surface.blit(s, (int(pos[0]) - r, int(pos[1]) - r))
 
-        self.draw_glow(surface, weight_pos, TETHER_WEIGHT_RADIUS, (90, 60, 120))
-        pygame.draw.circle(surface, (90, 60, 120),
+        self.draw_glow(surface, weight_pos, TETHER_WEIGHT_RADIUS, TETHER_WEIGHT_COLOR)
+        pygame.draw.circle(surface, TETHER_WEIGHT_COLOR,
                            (int(weight_pos.x), int(weight_pos.y)),
                            TETHER_WEIGHT_RADIUS)
