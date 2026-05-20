@@ -25,15 +25,15 @@ async def main():
     shake_state = [0]
 
     # --- CHARACTER ROSTER (change these two lines to swap fighters) ---
-    fighter_a = TetherBall(
+    fighter_a = TrapLayer(
         pos=(SCREEN_WIDTH // 4, SCREEN_HEIGHT // 2),
-        color=(140, 80, 200),
-        name="Tether"
+        color=(60, 180, 80),
+        name="Trap"
     )
-    fighter_b = GunBall(
+    fighter_b = SwordBall(
         pos=(3 * SCREEN_WIDTH // 4, SCREEN_HEIGHT // 2),
-        color=(255, 150, 30),
-        name="Gun"
+        color=(200, 215, 255),
+        name="Sword"
     )
     # ------------------------------------------------------------------
 
