@@ -28,12 +28,12 @@ async def main():
     fighter_a = SwordBall(
         pos=(SCREEN_WIDTH // 4, SCREEN_HEIGHT // 2),
         color=(200, 215, 255),
-        name="Sword A"
+        name="Sword"
     )
-    fighter_b = SwordBall(
+    fighter_b = GunBall(
         pos=(3 * SCREEN_WIDTH // 4, SCREEN_HEIGHT // 2),
-        color=(180, 200, 255),
-        name="Sword B"
+        color=(255, 150, 30),
+        name="Gun"
     )
     # ------------------------------------------------------------------
 
