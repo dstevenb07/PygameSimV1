@@ -25,15 +25,15 @@ async def main():
     shake_state = [0]
 
     # --- CHARACTER ROSTER (change these two lines to swap fighters) ---
-    fighter_a = Ball(
+    fighter_a = SwordBall(
         pos=(SCREEN_WIDTH // 4, SCREEN_HEIGHT // 2),
         color=(200, 215, 255),
-        name="Ball A"
+        name="Sword A"
     )
-    fighter_b = Ball(
+    fighter_b = SwordBall(
         pos=(3 * SCREEN_WIDTH // 4, SCREEN_HEIGHT // 2),
-        color=(255, 150, 30),
-        name="Ball B"
+        color=(180, 200, 255),
+        name="Sword B"
     )
     # ------------------------------------------------------------------
 
@@ -49,10 +49,6 @@ async def main():
             fighter_a.update(dt, fighter_b, particles, shake_state)
         if fighter_b.alive:
             fighter_b.update(dt, fighter_a, particles, shake_state)
-
-        # TEMP: test damage (remove in Phase 4)
-        if pygame.key.get_pressed()[pygame.K_SPACE]:
-            fighter_a.take_damage(10, "test")
 
         fighter_a.ball_collision(fighter_b)
 
