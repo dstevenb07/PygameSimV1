@@ -14,7 +14,7 @@ def _random_diagonal_angle():
             return angle
 
 
-def _bright(color, amount=30):
+def _bright(color, amount=OUTLINE_BRIGHT_AMOUNT):
     return tuple(min(255, c + amount) for c in color)
 
 
@@ -30,7 +30,7 @@ class Ball:
         self.hit_cooldowns = {}
         self.flicker_timer = 0.0
 
-        glow_size = (BALL_RADIUS + GLOW_LAYERS * 4) * 2 + 4
+        glow_size = (BALL_RADIUS + GLOW_LAYERS * GLOW_LAYER_STEP) * 2 + GLOW_LAYER_STEP
         self.glow_surf = pygame.Surface((glow_size, glow_size), pygame.SRCALPHA)
         self._glow_size = glow_size
 
@@ -116,7 +116,7 @@ class Ball:
     def draw_glow(self, surface, pos, radius, color):
         self.glow_surf.fill((0, 0, 0, 0))
         for i in range(GLOW_LAYERS):
-            layer_radius = radius + (GLOW_LAYERS - i) * 4
+            layer_radius = radius + (GLOW_LAYERS - i) * GLOW_LAYER_STEP
             alpha = max(5, GLOW_ALPHA_START - int((GLOW_ALPHA_START - 5) * i / max(GLOW_LAYERS - 1, 1)))
             cx = self._glow_size // 2
             cy = self._glow_size // 2
@@ -130,9 +130,8 @@ class Ball:
             return
 
         if self.hp < LOW_HP_THRESHOLD:
-            alpha = int(100 + 155 * (0.5 + 0.5 * math.sin(
-                self.flicker_timer * 2 * math.pi / FLICKER_INTERVAL
-            )))
+            t = 0.5 + 0.5 * math.sin(self.flicker_timer * 2 * math.pi / FLICKER_INTERVAL)
+            alpha = int(FLICKER_ALPHA_MIN + (255 - FLICKER_ALPHA_MIN) * t)
         else:
             alpha = 255
 
@@ -149,7 +148,8 @@ class Ball:
                                (int(self.pos.x), int(self.pos.y)), BALL_RADIUS)
 
         pygame.draw.circle(surface, _bright(self.color),
-                           (int(self.pos.x), int(self.pos.y)), BALL_RADIUS + 1, 2)
+                           (int(self.pos.x), int(self.pos.y)),
+                           BALL_RADIUS + OUTLINE_RADIUS_OFFSET, OUTLINE_WIDTH)
 
         self.weapon_draw(surface)
 

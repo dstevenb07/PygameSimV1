@@ -21,7 +21,7 @@ class TrapLayer(Ball):
 
     def weapon_update(self, dt, enemy, particles, shake_state):
         self.trail.append(tuple(self.pos))
-        if len(self.trail) > 3:
+        if len(self.trail) > TRAP_TRAIL_LENGTH:
             self.trail.pop(0)
 
         self.mine_timer -= dt
@@ -47,7 +47,7 @@ class TrapLayer(Ball):
 
     def weapon_draw(self, surface):
         for i, pos in enumerate(self.trail):
-            alpha = int(15 + 15 * (i / len(self.trail)))
+            alpha = int(TRAP_TRAIL_ALPHA_MIN + (TRAP_TRAIL_ALPHA_MAX - TRAP_TRAIL_ALPHA_MIN) * (i / len(self.trail)))
             s = pygame.Surface((BALL_RADIUS * 2, BALL_RADIUS * 2), pygame.SRCALPHA)
             pygame.draw.circle(s, (*self.color, alpha), (BALL_RADIUS, BALL_RADIUS), BALL_RADIUS)
             surface.blit(s, (int(pos[0]) - BALL_RADIUS, int(pos[1]) - BALL_RADIUS))
@@ -56,17 +56,17 @@ class TrapLayer(Ball):
             alpha = mine.alpha
             mine_draw_pos = (int(mine.pos.x) - MINE_RADIUS, int(mine.pos.y) - MINE_RADIUS)
             s = pygame.Surface((MINE_RADIUS * 2, MINE_RADIUS * 2), pygame.SRCALPHA)
-            pygame.draw.circle(s, (30, 80, 30, alpha), (MINE_RADIUS, MINE_RADIUS), MINE_RADIUS)
+            pygame.draw.circle(s, (*MINE_COLOR, alpha), (MINE_RADIUS, MINE_RADIUS), MINE_RADIUS)
             surface.blit(s, mine_draw_pos)
 
-            pulse_alpha = int(80 + 50 * math.sin(mine.age * 4))
+            pulse_alpha = int(MINE_RING_ALPHA_BASE + MINE_RING_ALPHA_AMP * math.sin(mine.age * MINE_PULSE_SPEED))
             ring_draw_pos = (int(mine.pos.x) - MINE_PROXIMITY_RADIUS,
                              int(mine.pos.y) - MINE_PROXIMITY_RADIUS)
             ring_surf = pygame.Surface(
                 (MINE_PROXIMITY_RADIUS * 2, MINE_PROXIMITY_RADIUS * 2), pygame.SRCALPHA
             )
             pygame.draw.circle(
-                ring_surf, (180, 40, 40, int(pulse_alpha * alpha / 255)),
+                ring_surf, (*MINE_RING_COLOR, int(pulse_alpha * alpha / 255)),
                 (MINE_PROXIMITY_RADIUS, MINE_PROXIMITY_RADIUS), MINE_PROXIMITY_RADIUS, 1
             )
             surface.blit(ring_surf, ring_draw_pos)
