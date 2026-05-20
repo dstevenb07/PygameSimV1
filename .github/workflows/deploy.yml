@@ -35,7 +35,7 @@ jobs:
         run: pip install pygame-ce pygbag
 
       - name: Build with pygbag
-        run: python -m pygbag --build --width 720 --height 720 .
+        run: python -m pygbag --build --width 720 --height 720 --template ./template.tmpl .
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
