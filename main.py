@@ -50,6 +50,10 @@ async def main():
         if fighter_b.alive:
             fighter_b.update(dt, fighter_a, particles, shake_state)
 
+        # TEMP: test damage (remove in Phase 4)
+        if pygame.key.get_pressed()[pygame.K_SPACE]:
+            fighter_a.take_damage(10, "test")
+
         fighter_a.ball_collision(fighter_b)
 
         game_surface.fill(BACKGROUND_COLOR)

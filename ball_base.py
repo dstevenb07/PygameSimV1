@@ -99,7 +99,13 @@ class Ball:
     # ------------------------------------------------------------------
 
     def take_damage(self, amount, source):
-        pass  # implemented Phase 2
+        if self.hit_cooldowns.get(source, 0) > 0:
+            return
+        self.hp = max(0, self.hp - amount)
+        self.hit_cooldowns[source] = HIT_COOLDOWN
+        if self.hp <= 0:
+            self.alive = False
+            # Phase 3 will add: particles.emit_death(self.pos, self.color)
 
     def is_dead(self):
         return self.hp <= 0
