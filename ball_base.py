@@ -105,7 +105,6 @@ class Ball:
         self.hit_cooldowns[source] = HIT_COOLDOWN
         if self.hp <= 0:
             self.alive = False
-            # Phase 3 will add: particles.emit_death(self.pos, self.color)
 
     def is_dead(self):
         return self.hp <= 0
@@ -169,6 +168,8 @@ class Ball:
 
         self.move()
         self.weapon_update(dt, enemy, particles, shake_state)
+        if not self.alive:
+            particles.emit_death(self.pos, self.color)
 
     # ------------------------------------------------------------------
     # Subclass hooks
