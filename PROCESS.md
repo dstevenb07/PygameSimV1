@@ -41,12 +41,18 @@ We have a live browser test URL via GitHub Pages + pygbag.
 The `pages-test` branch is a persistent test branch. To push a build for browser testing:
 
 ```
-1. Merge your phase branch into pages-test (or cherry-pick / push files directly)
+1. Reset pages-test to main first, then merge the phase branch:
+     git checkout pages-test
+     git reset --hard origin/main
+     git merge phase-N/your-branch
+     git push origin pages-test --force
 2. GitHub Actions auto-triggers on push to pages-test
 3. Wait ~2 minutes for the Action to go green (Actions tab)
 4. Open the Pages URL on your phone to test
 5. Happy? Then merge the phase PR to main
 ```
+
+**Why reset first:** pages-test accumulates its own merge history independently of main. Without the reset, touching the same files across phases will cause conflicts. pages-test is a throwaway test branch — force push is safe here.
 
 **Pages URL:** check Settings → Pages in the repo for the live URL.
 
